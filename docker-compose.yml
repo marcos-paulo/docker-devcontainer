@@ -1,0 +1,28 @@
+version: "2"
+name: "workspace_${username}_${project_name}"
+services:
+  workspace_development:
+    build:
+      dockerfile: Dockerfile
+      args:
+        USERNAME: ${username}
+        USER_UID: ${user_uid}
+        USER_GID: ${user_gid}
+        PASSWD: ${passwd}
+        DOCKER_GID: ${docker_gid}
+    image: ${username}_dev
+    environment:
+      DISPLAY:
+    # container_name: mycontainername
+    hostname: dev-host-${username}
+    working_dir: /home/${username}/app
+    ports:
+      - ${host_port}:${guest_port}
+    volumes:
+      - ../.vscode-server:/home/${username}/.vscode-server
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ../:/home/${username}/app
+    command: /bin/sh -c "while sleep 1000; do :; done"
