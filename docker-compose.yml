@@ -1,5 +1,4 @@
 version: "2"
-name: "workspace_${username}_${project_name}"
 services:
   workspace_development:
     build:
