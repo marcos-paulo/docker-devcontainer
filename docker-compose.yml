@@ -17,7 +17,7 @@ services:
     hostname: dev-host-${username}
     working_dir: /home/${username}/app
     ports:
-      - ${host_port}:${guest_port}
+      - ${host_port}:${container_port}
     volumes:
       - ../.vscode-server:/home/${username}/.vscode-server
       - /etc/timezone:/etc/timezone:ro
