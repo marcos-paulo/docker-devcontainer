@@ -18,10 +18,10 @@ services:
     ports:
       - ${host_port}:${container_port}
     volumes:
-      - ../.vscode-server:/home/${username}/.vscode-server
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - /var/run/docker.sock:/var/run/docker.sock
       - ../${project_name}:/home/${username}/app
+      - ../${project_name}/.vscode/.vscode-server:/home/${username}/.vscode-server
     command: /bin/sh -c "while sleep 1000; do :; done"
