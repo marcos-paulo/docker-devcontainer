@@ -1,27 +1,77 @@
 version: "2"
 services:
-  workspace_development:
+  java-dev:
     build:
       dockerfile: Dockerfile
       args:
-        USERNAME: ${username}
+        USERNAME: ${username_java}
         USER_UID: ${user_uid}
         USER_GID: ${user_gid}
         PASSWD: ${passwd}
         DOCKER_GID: ${docker_gid}
-    image: ${username}_dev
+    image: ${username_java}-dev
     environment:
       DISPLAY:
-    # container_name: mycontainername
-    hostname: dev-host-${username}
-    working_dir: /home/${username}/app
+      DATA_BASE_PASSWORD: ${db_password}
+    hostname: dev-host-${username_java}
+    working_dir: /home/${username_java}/app
     ports:
-      - ${host_port}:${container_port}
+      - 80:8080
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /var/run/docker.sock:/var/run/docker.sock
-      - ../${project_name}:/home/${username}/app
-      - ../${project_name}/.vscode/.vscode-server:/home/${username}/.vscode-server
+      - ../${project_java}:/home/${username_java}/app
+      - ../${project_java}/.vscode/.m2:/home/${username_java}/.m2
+      - ../${project_java}/.vscode/.vscode-server:/home/${username_java}/.vscode-server
+    depends_on:
+      - mysql-db
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+  mysql-db:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    # expose:
+    #   - 3306
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${db_password}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  adminer-db:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+
+  node-tests-api-java:
+    build:
+      dockerfile: Dockerfile
+      args:
+        USERNAME: ${username_node}
+        USER_UID: ${user_uid}
+        USER_GID: ${user_gid}
+        PASSWD: ${passwd}
+        DOCKER_GID: ${docker_gid}
+    image: ${username_node}-dev
+    environment:
+      DISPLAY:
+    hostname: dev-host-${username_node}
+    working_dir: /home/${username_node}/app
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../${project_node}:/home/${username_node}/app
+      - ../${project_node}/.vscode/.vscode-server:/home/${username_node}/.vscode-server
+    depends_on:
+      - java-dev
     command: /bin/sh -c "while sleep 1000; do :; done"
