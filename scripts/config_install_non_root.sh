@@ -9,8 +9,17 @@ print_green() {
 }
 
 path_scripts=$(echo $0 | sed "s|/config_install_non_root.sh||g ")
-print_green "Running scripts in $path_scripts:"
+print_green "Running scripts in $path_scripts/non_root/:"
 for i in $path_scripts/non_root/*.sh; do
+  if [ -r $i -a $i != "$0" ]; then
+    print_green $i
+    . $i
+  fi
+done
+unset i
+
+print_green "Running scripts in $path_scripts/$USERNAME/non_root/:"
+for i in $path_scripts/$USERNAME/non_root/*.sh; do
   if [ -r $i -a $i != "$0" ]; then
     print_green $i
     . $i

@@ -25,8 +25,17 @@ test_env "$PASSWD" "PASSWD"
 test_env "$DOCKER_GID" "DOCKER_GID"
 
 path_scripts=$(echo $0 | sed "s|/config_install_root.sh||g ")
-print_green "Running scripts in $path_scripts:"
+print_green "Running scripts in $path_scripts/root/:"
 for i in $path_scripts/root/*.sh; do
+  if [ -r $i -a $i != "$0" ]; then
+    print_green $i
+    . $i
+  fi
+done
+unset i
+
+print_green "Running scripts in $path_scripts/$USERNAME/root/:"
+for i in $path_scripts/$USERNAME/root/*.sh; do
   if [ -r $i -a $i != "$0" ]; then
     print_green $i
     . $i
