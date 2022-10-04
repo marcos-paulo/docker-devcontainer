@@ -12,7 +12,10 @@ services:
     image: ${username_java}-dev
     environment:
       DISPLAY:
-      DATA_BASE_PASSWORD: ${db_password}
+      DATA_BASE_ADDRESS: ${data_base_address}
+      DATA_BASE_NAME: ${data_base_name}
+      DATA_BASE_USER: ${data_base_user}
+      DATA_BASE_PASSWORD: ${data_base_password}
     hostname: dev-host-${username_java}
     working_dir: /home/${username_java}/app
     ports:
@@ -40,7 +43,7 @@ services:
     ports:
       - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: ${db_password}
+      MYSQL_ROOT_PASSWORD: ${data_base_password}
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
